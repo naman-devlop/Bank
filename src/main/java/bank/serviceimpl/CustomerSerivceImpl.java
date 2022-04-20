@@ -204,4 +204,10 @@ public class CustomerSerivceImpl implements CustomerService {
 
 	}
 
+	public Double checkBalance(String account) {
+		Double currentBalance = calculateCurrentAmount(account);
+		
+		return currentBalance;
+	}
+
 }

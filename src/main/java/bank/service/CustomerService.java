@@ -22,4 +22,5 @@ public interface CustomerService {
 	public List<CustomerDto> getAllCustomer();
 	public String customerTransaction(String account, CustomerTransactionDto customerTxDto);
 	public String addCustomerAddress(CustomerAddressDto customerAddDto);
+	public Double checkBalance(String account);
 }
