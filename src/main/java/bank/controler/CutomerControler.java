@@ -220,7 +220,10 @@ public class CutomerControler {
 		return new ResponseEntity<JSONObject>(jsonObject, HttpStatus.OK);
 
 	}
-
+/**
+ * method to open the home page
+ * @return
+ */
 	@GetMapping(value = "/home")
 	public ModelAndView homePage() {
 		ModelAndView mv = new ModelAndView("home");
@@ -249,15 +252,15 @@ public class CutomerControler {
 				request.getParameter("ifsc"));
 		return mv;
 	}
-	
+
 	@DeleteMapping(value = "/deleteCustomerFromJsp/{account}")
-	public ModelAndView deleteCustomerFromJsp(HttpServletRequest request , @PathVariable("account") String account) {
+	public ModelAndView deleteCustomerFromJsp(HttpServletRequest request, @PathVariable("account") String account) {
 		ModelAndView mv = new ModelAndView("customer");
 		customerSerivce.deleteByCustomerAccount(account);
 		return mv;
-		
+
 	}
-	
+
 	@GetMapping(value = "/searchCustomer/{account}")
 	public ModelAndView searchCustomer(HttpServletRequest request, @PathVariable("account") String account) {
 		CustomerDto customerDto = new CustomerDto();
@@ -270,7 +273,7 @@ public class CutomerControler {
 		mv.addObject("transactionInfo", customerTxDtos);
 		return mv;
 	}
-	
+
 	@PostMapping(value = "saveCustomerTx")
 	public String saveCustomerTransaction(HttpServletRequest request) {
 		String result = null;
@@ -282,6 +285,7 @@ public class CutomerControler {
 		result = customerSerivce.saveCustomerTransaction(account, ifsc, amount, tx_type, customerId);
 		return result;
 	}
+
 	private List<CustomerAddressDto> mapRequestToCustomerAddress(CustomerBean customerBean) {
 		List<CustomerAddressDto> customerAddressDtos = new ArrayList<CustomerAddressDto>();
 		CustomerList customerList = customerBean.getCustomerList();
@@ -340,7 +344,7 @@ public class CutomerControler {
 				customerDto.setName(c.getName());
 				customerDto.setAccount(c.getAccount());
 				customerDto.setIfcCode(c.getIfcCode());
-
+         
 				customerDtoList.add(customerDto);
 
 			} else {
