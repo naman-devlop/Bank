@@ -6,16 +6,22 @@ package bank.controler;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import bank.bean.CustomerAddressBean;
 import bank.bean.CustomerBean;
@@ -29,6 +35,7 @@ import bank.model.CustomerResponse;
 import bank.model.CustomerTransactionDto;
 import bank.model.CustomerTransactionResponse;
 import bank.service.CustomerService;
+import bank.service.CustomerTxRepository;
 
 /**
  * @author GUR57557
@@ -195,10 +202,10 @@ public class CutomerControler {
 		return new ResponseEntity<JSONObject>(jsonObject, HttpStatus.OK);
 
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@GetMapping(value = "/checkBalance/{account}", produces = { "application/json" })
-	public ResponseEntity<JSONObject> checkBalance(@PathVariable ("account") String account){
+	public ResponseEntity<JSONObject> checkBalance(@PathVariable("account") String account) {
 		JSONObject jsonObject = new JSONObject();
 		Double currentBalance = null;
 		currentBalance = customerSerivce.checkBalance(account);
@@ -209,12 +216,72 @@ public class CutomerControler {
 		customerResponse.setAccount(account);
 		customerResponse.setCurrentBalance(String.valueOf(currentBalance));
 		jsonObject.put("CurrentBalance", customerResponse);
-		
-		
-		return new ResponseEntity<JSONObject>(jsonObject,HttpStatus.OK);
-		
+
+		return new ResponseEntity<JSONObject>(jsonObject, HttpStatus.OK);
+
 	}
 
+	@GetMapping(value = "/home")
+	public ModelAndView homePage() {
+		ModelAndView mv = new ModelAndView("home");
+		return mv;
+	}
+
+	@GetMapping(value = "/transactionPage")
+	public ModelAndView transactionPage() {
+		ModelAndView mv = new ModelAndView("transaction");
+		return mv;
+	}
+
+	@GetMapping(value = "/customerPage")
+	public ModelAndView customerPage() {
+		ModelAndView mv = new ModelAndView("customer");
+		List<CustomerDto> customerDtoList = customerSerivce.getAllCustomer();
+		mv.addObject("customers", customerDtoList);
+		return mv;
+	}
+
+	/* addCustomerFromJsp */
+	@PostMapping(value = "/addCustomerFromJsp", produces = { "application/json" })
+	public ModelAndView addCustomer(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("customer");
+		customerSerivce.saveCustomerFromJsp(request.getParameter("account"), request.getParameter("name"),
+				request.getParameter("ifsc"));
+		return mv;
+	}
+	
+	@DeleteMapping(value = "/deleteCustomerFromJsp/{account}")
+	public ModelAndView deleteCustomerFromJsp(HttpServletRequest request , @PathVariable("account") String account) {
+		ModelAndView mv = new ModelAndView("customer");
+		customerSerivce.deleteByCustomerAccount(account);
+		return mv;
+		
+	}
+	
+	@GetMapping(value = "/searchCustomer/{account}")
+	public ModelAndView searchCustomer(HttpServletRequest request, @PathVariable("account") String account) {
+		CustomerDto customerDto = new CustomerDto();
+		ModelAndView mv = new ModelAndView("transaction");
+		List<CustomerTransactionDto> customerTxDtos = customerSerivce.getAllTransactionByAccount(account);
+		CustomerDto customer = customerSerivce.findbyCustomerAccount(account, customerDto);
+		Double currentBalance = customerSerivce.checkBalance(account);
+		mv.addObject("customer", customer);
+		mv.addObject("currentBalance", currentBalance);
+		mv.addObject("transactionInfo", customerTxDtos);
+		return mv;
+	}
+	
+	@PostMapping(value = "saveCustomerTx")
+	public String saveCustomerTransaction(HttpServletRequest request) {
+		String result = null;
+		String account = request.getParameter("customerAccount");
+		String ifsc = request.getParameter("customerIFSC");
+		String tx_type = request.getParameter("txType");
+		String amount = request.getParameter("amount");
+		String customerId = request.getParameter("customerId");
+		result = customerSerivce.saveCustomerTransaction(account, ifsc, amount, tx_type, customerId);
+		return result;
+	}
 	private List<CustomerAddressDto> mapRequestToCustomerAddress(CustomerBean customerBean) {
 		List<CustomerAddressDto> customerAddressDtos = new ArrayList<CustomerAddressDto>();
 		CustomerList customerList = customerBean.getCustomerList();

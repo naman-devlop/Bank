@@ -23,4 +23,9 @@ public interface CustomerService {
 	public String customerTransaction(String account, CustomerTransactionDto customerTxDto);
 	public String addCustomerAddress(CustomerAddressDto customerAddDto);
 	public Double checkBalance(String account);
+	public String saveCustomerFromJsp(String account,String name, String ifsc);
+	public List<CustomerTransactionDto> getAllTransactionByAccount(String account);
+	public String saveCustomerTransaction(String account, String ifsc, String amount, String tx_type, String customerId);
+	
+	
 }
