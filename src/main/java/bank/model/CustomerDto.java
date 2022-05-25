@@ -11,10 +11,24 @@ public class CustomerDto {
 	private String name;
 	private String account;
 	private String ifcCode;
+	private Long id;
+	
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	@Override
 	public String toString() {
-		return "CustomerDto [name=" + name + ", account=" + account + ", ifcCode=" + ifcCode + "]";
+		return "CustomerDto [name=" + name + ", account=" + account + ", ifcCode=" + ifcCode + ", id=" + id + "]";
 	}
 	/**
 	 * @return the name

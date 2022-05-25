@@ -85,6 +85,7 @@ public class CustomerSerivceImpl implements CustomerService {
 			customerDto.setAccount(customer.getAccount());
 			customerDto.setIfcCode(customer.getIfcCode());
 			customerDto.setName(customer.getName());
+			customerDto.setId(customer.getId());
 			customerDtoList.add(customerDto);
 
 		}
@@ -97,6 +98,7 @@ public class CustomerSerivceImpl implements CustomerService {
 			customerDto.setAccount(customer.getAccount());
 			customerDto.setIfcCode(customer.getIfcCode());
 			customerDto.setName(customer.getName());
+			customerDto.setId(customer.getId());
 			return customerDto;
 		}
 		return customerDto;
@@ -202,6 +204,88 @@ public class CustomerSerivceImpl implements CustomerService {
 		}
 		return result;
 
+	}
+
+	public Double checkBalance(String account) {
+		Double currentBalance = calculateCurrentAmount(account);
+
+		return currentBalance;
+	}
+
+	public String saveCustomerFromJsp(String account, String name, String ifsc) {
+		Customer customer = customerRepository.findByAccount(account);
+		if (customer != null && customer.getAccount().equalsIgnoreCase(account)) {
+			customer.setAccount(account);
+			customer.setIfcCode(ifsc);
+			customer.setName(name);
+			customerRepository.save(customer);
+		} else {
+			customer = new Customer();
+			customer.setAccount(account);
+			customer.setIfcCode(ifsc);
+			customer.setName(name);
+			customerRepository.save(customer);
+		}
+
+		return "SUCESS";
+	}
+
+	public List<CustomerTransactionDto> getAllTransactionByAccount(String account) {
+		List<CustomerTransactionDto> customerTxDtoList = new ArrayList<CustomerTransactionDto>();
+		List<CustomerTransaction> customerTxList = cusTxRepository.findByAccount(account);
+		for (CustomerTransaction c : customerTxList) {
+			CustomerTransactionDto customerTxDto = new CustomerTransactionDto();
+			customerTxDto.setAccount(c.getAccount());
+			customerTxDto.setCreditAmount(c.getCreditAmount());
+			customerTxDto.setCurrentBalance(c.getCurrentBalance());
+			customerTxDto.setDebitAmount(c.getDebitAmount());
+			customerTxDto.setTransactionDate(c.getTx_date());
+			customerTxDto.setTransactionType(c.getTransactionType());
+			customerTxDtoList.add(customerTxDto);
+
+		}
+		return customerTxDtoList;
+
+	}
+
+	public String saveCustomerTransaction(String account, String ifsc, String amount, String tx_type,
+			String customerId) {
+		Double customerAmount = Double.parseDouble(amount);
+		Long id = Long.parseLong(customerId);
+		Double currentBalance = calculateCurrentAmount(account);
+		CustomerTransaction customerTx = new CustomerTransaction();
+		customerTx.setAccount(account);
+		customerTx.setId(id);
+
+		LocalDateTime ldt = LocalDateTime.now();
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		String date_tx = ldt.format(format);
+
+		customerTx.setTx_date(date_tx);
+
+		if (tx_type.equalsIgnoreCase("CR")) {
+			customerTx.setCreditAmount(customerAmount);
+			customerTx.setCurrentBalance(currentBalance + customerAmount);
+			customerTx.setTransactionType("CR");
+
+			cusTxRepository.save(customerTx);
+			return "SUCCESS";
+		}
+		if (tx_type.equalsIgnoreCase("DB") && currentBalance < customerAmount) {
+			return "Sorry You have not sufficient amount in your account";
+
+		}
+
+		if (tx_type.equalsIgnoreCase("DB") && currentBalance > customerAmount) {
+			customerTx.setDebitAmount(customerAmount);
+			customerTx.setTransactionType("DB");
+			customerTx.setCurrentBalance(currentBalance - customerAmount);
+
+			cusTxRepository.save(customerTx);
+			return "SUCCESS";
+
+		}
+		return "Something went wring , please try again later";
 	}
 
 }
