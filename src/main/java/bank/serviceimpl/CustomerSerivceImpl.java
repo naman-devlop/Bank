@@ -245,7 +245,6 @@ public class CustomerSerivceImpl implements CustomerService {
 
 		}
 		return customerTxDtoList;
-
 	}
 
 	public String saveCustomerTransaction(String account, String ifsc, String amount, String tx_type,
@@ -256,34 +255,26 @@ public class CustomerSerivceImpl implements CustomerService {
 		CustomerTransaction customerTx = new CustomerTransaction();
 		customerTx.setAccount(account);
 		customerTx.setId(id);
-
 		LocalDateTime ldt = LocalDateTime.now();
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		String date_tx = ldt.format(format);
-
 		customerTx.setTx_date(date_tx);
-
 		if (tx_type.equalsIgnoreCase("CR")) {
 			customerTx.setCreditAmount(customerAmount);
 			customerTx.setCurrentBalance(currentBalance + customerAmount);
 			customerTx.setTransactionType("CR");
-
 			cusTxRepository.save(customerTx);
 			return "SUCCESS";
 		}
 		if (tx_type.equalsIgnoreCase("DB") && currentBalance < customerAmount) {
 			return "Sorry You have not sufficient amount in your account";
-
 		}
-
 		if (tx_type.equalsIgnoreCase("DB") && currentBalance > customerAmount) {
 			customerTx.setDebitAmount(customerAmount);
 			customerTx.setTransactionType("DB");
 			customerTx.setCurrentBalance(currentBalance - customerAmount);
-
 			cusTxRepository.save(customerTx);
 			return "SUCCESS";
-
 		}
 		return "Something went wring , please try again later";
 	}

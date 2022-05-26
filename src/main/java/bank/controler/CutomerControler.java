@@ -28,6 +28,7 @@ import bank.bean.CustomerBean;
 import bank.bean.CustomerInfo;
 import bank.bean.CustomerList;
 import bank.bean.CustomerTransactionBean;
+import bank.constant.BankConstants;
 import bank.model.CustomerAddressDto;
 import bank.model.CustomerAddressResponse;
 import bank.model.CustomerDto;
@@ -53,7 +54,7 @@ public class CutomerControler {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	@PostMapping(value = "/addCustomer", produces = { "application/json" })
+	@PostMapping(value = BankConstants.ADD_CUSTOMER, produces = { BankConstants.APPLICATION_JSON })
 	public ResponseEntity<JSONObject> AddCustomer(@RequestBody CustomerBean customerBean) {
 		String result = "FAIL";
 
@@ -83,7 +84,7 @@ public class CutomerControler {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	@DeleteMapping(value = "/deleteCustomer/{account}", produces = { "application/json" })
+	@DeleteMapping(value = BankConstants.DELETE_CUSTOMER, produces = { BankConstants.APPLICATION_JSON })
 	public ResponseEntity<JSONObject> deleteCustomer(@PathVariable("account") String account) {
 
 		JSONObject resObj = new JSONObject();
@@ -110,14 +111,12 @@ public class CutomerControler {
 	}
 
 	@SuppressWarnings("unchecked")
-	@PostMapping(value = "/getCustomer", produces = { "application/json" })
+	@PostMapping(value = BankConstants.GET_CUSTOMER, produces = { BankConstants.APPLICATION_JSON })
 	public ResponseEntity<JSONObject> getAllCustomer() {
 		List<CustomerDto> customerDtoList = customerSerivce.getAllCustomer();
-
 		JSONObject resObj = new JSONObject();
 		resObj.put("Response", customerDtoList);
 		return new ResponseEntity<JSONObject>(resObj, HttpStatus.OK);
-
 	}
 
 	/**
@@ -127,7 +126,7 @@ public class CutomerControler {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	@PostMapping(value = "/customerTransaction", produces = { "application/json" })
+	@PostMapping(value = BankConstants.CUSTOMER_TRANSACTION, produces = { BankConstants.APPLICATION_JSON })
 	public ResponseEntity<JSONObject> creditAmount(@RequestBody CustomerBean customerBean) {
 		String result = null;
 		JSONObject resObj = new JSONObject();
@@ -173,7 +172,7 @@ public class CutomerControler {
 	}
 
 	@SuppressWarnings("unchecked")
-	@PostMapping(value = "/addUpdateCustomerAddress", produces = { "application/json" })
+	@PostMapping(value = BankConstants.UPDATE_CUSTOMER_ADDRESS, produces = { BankConstants.APPLICATION_JSON })
 	public ResponseEntity<JSONObject> addUpdateCustomerAddress(@RequestBody CustomerBean customerBean) {
 		List<CustomerAddressDto> customerAddressDtos = mapRequestToCustomerAddress(customerBean);
 		String result = null;
@@ -204,7 +203,7 @@ public class CutomerControler {
 	}
 
 	@SuppressWarnings("unchecked")
-	@GetMapping(value = "/checkBalance/{account}", produces = { "application/json" })
+	@GetMapping(value = BankConstants.CHECK_BALANCE, produces = { BankConstants.APPLICATION_JSON })
 	public ResponseEntity<JSONObject> checkBalance(@PathVariable("account") String account) {
 		JSONObject jsonObject = new JSONObject();
 		Double currentBalance = null;
@@ -224,19 +223,19 @@ public class CutomerControler {
  * method to open the home page
  * @return
  */
-	@GetMapping(value = "/home")
+	@GetMapping(value = BankConstants.HOME_PAGE)
 	public ModelAndView homePage() {
 		ModelAndView mv = new ModelAndView("home");
 		return mv;
 	}
 
-	@GetMapping(value = "/transactionPage")
+	@GetMapping(value = BankConstants.TRANSACTION_PAGE)
 	public ModelAndView transactionPage() {
 		ModelAndView mv = new ModelAndView("transaction");
 		return mv;
 	}
 
-	@GetMapping(value = "/customerPage")
+	@GetMapping(value = BankConstants.CUSTOMER_PAGE)
 	public ModelAndView customerPage() {
 		ModelAndView mv = new ModelAndView("customer");
 		List<CustomerDto> customerDtoList = customerSerivce.getAllCustomer();
@@ -245,7 +244,7 @@ public class CutomerControler {
 	}
 
 	/* addCustomerFromJsp */
-	@PostMapping(value = "/addCustomerFromJsp", produces = { "application/json" })
+	@PostMapping(value = BankConstants.ADD_CUSTOMER_FROM_WEBPAGE, produces = { BankConstants.APPLICATION_JSON })
 	public ModelAndView addCustomer(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("customer");
 		customerSerivce.saveCustomerFromJsp(request.getParameter("account"), request.getParameter("name"),
@@ -253,7 +252,7 @@ public class CutomerControler {
 		return mv;
 	}
 
-	@DeleteMapping(value = "/deleteCustomerFromJsp/{account}")
+	@DeleteMapping(value = BankConstants.DELETE_CUSTOMER_FROM_WEBPAGE)
 	public ModelAndView deleteCustomerFromJsp(HttpServletRequest request, @PathVariable("account") String account) {
 		ModelAndView mv = new ModelAndView("customer");
 		customerSerivce.deleteByCustomerAccount(account);
@@ -261,7 +260,7 @@ public class CutomerControler {
 
 	}
 
-	@GetMapping(value = "/searchCustomer/{account}")
+	@GetMapping(value = BankConstants.SEARCH_CUSTOMER)
 	public ModelAndView searchCustomer(HttpServletRequest request, @PathVariable("account") String account) {
 		CustomerDto customerDto = new CustomerDto();
 		ModelAndView mv = new ModelAndView("transaction");
@@ -274,7 +273,7 @@ public class CutomerControler {
 		return mv;
 	}
 
-	@PostMapping(value = "saveCustomerTx")
+	@PostMapping(value = BankConstants.SAVE_CUSTOMER_TX_WEBPAGE)
 	public String saveCustomerTransaction(HttpServletRequest request) {
 		String result = null;
 		String account = request.getParameter("customerAccount");
