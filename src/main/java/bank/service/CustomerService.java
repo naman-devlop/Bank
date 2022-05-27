@@ -5,6 +5,7 @@ package bank.service;
 
 import java.util.List;
 
+import bank.exception.BankException;
 import bank.model.Customer;
 import bank.model.CustomerAddressDto;
 import bank.model.CustomerDto;
@@ -24,7 +25,7 @@ public interface CustomerService {
 	public String addCustomerAddress(CustomerAddressDto customerAddDto);
 	public Double checkBalance(String account);
 	public String saveCustomerFromJsp(String account,String name, String ifsc);
-	public List<CustomerTransactionDto> getAllTransactionByAccount(String account);
+	public List<CustomerTransactionDto> getAllTransactionByAccount(String account) throws BankException;
 	public String saveCustomerTransaction(String account, String ifsc, String amount, String tx_type, String customerId);
 	
 	

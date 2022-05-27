@@ -29,6 +29,7 @@ import bank.bean.CustomerInfo;
 import bank.bean.CustomerList;
 import bank.bean.CustomerTransactionBean;
 import bank.constant.BankConstants;
+import bank.exception.BankException;
 import bank.model.CustomerAddressDto;
 import bank.model.CustomerAddressResponse;
 import bank.model.CustomerDto;
@@ -264,7 +265,14 @@ public class CutomerControler {
 	public ModelAndView searchCustomer(HttpServletRequest request, @PathVariable("account") String account) {
 		CustomerDto customerDto = new CustomerDto();
 		ModelAndView mv = new ModelAndView("transaction");
-		List<CustomerTransactionDto> customerTxDtos = customerSerivce.getAllTransactionByAccount(account);
+		List<CustomerTransactionDto> customerTxDtos = new ArrayList<CustomerTransactionDto>();
+		try {
+			customerTxDtos = customerSerivce.getAllTransactionByAccount(account);
+		} catch (BankException e) {
+			System.out.println(e);
+			
+		
+		}
 		CustomerDto customer = customerSerivce.findbyCustomerAccount(account, customerDto);
 		Double currentBalance = customerSerivce.checkBalance(account);
 		mv.addObject("customer", customer);

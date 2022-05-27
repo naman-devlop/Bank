@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import bank.exception.BankException;
 import bank.model.Customer;
 import bank.model.CustomerAddress;
 import bank.model.CustomerAddressDto;
@@ -230,21 +231,27 @@ public class CustomerSerivceImpl implements CustomerService {
 		return "SUCESS";
 	}
 
-	public List<CustomerTransactionDto> getAllTransactionByAccount(String account) {
+	public List<CustomerTransactionDto> getAllTransactionByAccount(String account) throws BankException {
 		List<CustomerTransactionDto> customerTxDtoList = new ArrayList<CustomerTransactionDto>();
 		List<CustomerTransaction> customerTxList = cusTxRepository.findByAccount(account);
-		for (CustomerTransaction c : customerTxList) {
-			CustomerTransactionDto customerTxDto = new CustomerTransactionDto();
-			customerTxDto.setAccount(c.getAccount());
-			customerTxDto.setCreditAmount(c.getCreditAmount());
-			customerTxDto.setCurrentBalance(c.getCurrentBalance());
-			customerTxDto.setDebitAmount(c.getDebitAmount());
-			customerTxDto.setTransactionDate(c.getTx_date());
-			customerTxDto.setTransactionType(c.getTransactionType());
-			customerTxDtoList.add(customerTxDto);
+		if(!customerTxList.isEmpty()) {
+			for (CustomerTransaction c : customerTxList) {
+				CustomerTransactionDto customerTxDto = new CustomerTransactionDto();
+				customerTxDto.setAccount(c.getAccount());
+				customerTxDto.setCreditAmount(c.getCreditAmount());
+				customerTxDto.setCurrentBalance(c.getCurrentBalance());
+				customerTxDto.setDebitAmount(c.getDebitAmount());
+				customerTxDto.setTransactionDate(c.getTx_date());
+				customerTxDto.setTransactionType(c.getTransactionType());
+				customerTxDtoList.add(customerTxDto);
 
+			}
+			return customerTxDtoList;			
 		}
-		return customerTxDtoList;
+		else {
+			throw new BankException("Account is wrong or empty");
+		}
+
 	}
 
 	public String saveCustomerTransaction(String account, String ifsc, String amount, String tx_type,
