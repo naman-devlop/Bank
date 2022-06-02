@@ -269,8 +269,7 @@ public class CutomerControler {
 		try {
 			customerTxDtos = customerSerivce.getAllTransactionByAccount(account);
 		} catch (BankException e) {
-			System.out.println(e);
-			
+			mv.addObject("error", e);
 		
 		}
 		CustomerDto customer = customerSerivce.findbyCustomerAccount(account, customerDto);
@@ -293,6 +292,29 @@ public class CutomerControler {
 		return result;
 	}
 
+	@GetMapping(value = "/updateCustomerAddressFromJsp/{account}")
+	public ModelAndView updateCustomerAddressJsp(HttpServletRequest request, @PathVariable("account") String account ) {
+		ModelAndView mv = new ModelAndView("customer_address");
+		CustomerAddressDto custAddDto = new CustomerAddressDto();
+		custAddDto = customerSerivce.findAddressByAccount(account);
+		mv.addObject("customerAddress", custAddDto);
+		mv.addObject("account",account);
+		return mv;
+	}
+	
+	@PostMapping(value = "/saveCustomerAddressJsp/{account}")
+	public ModelAndView saveCustomerAddree(HttpServletRequest request, @PathVariable("account") String account) {
+		
+		String email = request.getParameter("customerEmail");
+		String currentAddress = request.getParameter("customerCurrentAddress");
+		String permanentAddress = request.getParameter("customerPermanentAddress");
+		String customerMobile = request.getParameter("customerMobile");
+		String result = null;
+		result  = customerSerivce.saveCustomerAddressFromJSP(account, email, customerMobile, currentAddress, permanentAddress);
+		ModelAndView mv= new ModelAndView("customer_address");
+		return mv;
+	}
+	
 	private List<CustomerAddressDto> mapRequestToCustomerAddress(CustomerBean customerBean) {
 		List<CustomerAddressDto> customerAddressDtos = new ArrayList<CustomerAddressDto>();
 		CustomerList customerList = customerBean.getCustomerList();
@@ -309,7 +331,6 @@ public class CutomerControler {
 		}
 		return customerAddressDtos;
 	}
-
 	private List<CustomerTransactionDto> mapRequestTOcustomeCustomerTransaction(CustomerBean customerBean) {
 		List<CustomerTransactionDto> customerTraDtos = new ArrayList<CustomerTransactionDto>();
 		CustomerList customerList = customerBean.getCustomerList();
@@ -322,9 +343,7 @@ public class CutomerControler {
 				customerTx.setAccount(c.getAccount());
 				customerTx.setTransactionType("CR");
 				customerTx.setCreditAmount(Double.parseDouble(customerTransaction.getTransactionAmount()));
-
 				customerTraDtos.add(customerTx);
-
 			}
 			if (customerTransaction.getTransactionAmount() != null
 					&& customerTransaction.getTransactionType().equalsIgnoreCase("DB")) {
@@ -335,7 +354,6 @@ public class CutomerControler {
 			}
 		}
 		return customerTraDtos;
-
 	}
 
 	private List<CustomerDto> mapRequestToCustomer(CustomerBean customerBean) {

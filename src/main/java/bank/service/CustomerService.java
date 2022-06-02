@@ -17,16 +17,30 @@ import bank.model.CustomerTransactionDto;
  *
  */
 public interface CustomerService {
-	public  String save(List<CustomerDto> customerDtoList);
+	public String save(List<CustomerDto> customerDtoList);
+
 	public CustomerDto findbyCustomerAccount(String account, CustomerDto customerDto);
+
 	public Boolean deleteByCustomerAccount(String account);
+
 	public List<CustomerDto> getAllCustomer();
+
 	public String customerTransaction(String account, CustomerTransactionDto customerTxDto);
+
 	public String addCustomerAddress(CustomerAddressDto customerAddDto);
+
 	public Double checkBalance(String account);
-	public String saveCustomerFromJsp(String account,String name, String ifsc);
+
+	public String saveCustomerFromJsp(String account, String name, String ifsc);
+
 	public List<CustomerTransactionDto> getAllTransactionByAccount(String account) throws BankException;
-	public String saveCustomerTransaction(String account, String ifsc, String amount, String tx_type, String customerId);
+
+	public String saveCustomerTransaction(String account, String ifsc, String amount, String tx_type,
+			String customerId);
+
+	public String saveCustomerAddressFromJSP(String account, String email, String mobile, String currentAddress,
+			String permanentAddress);
+	public CustomerAddressDto findAddressByAccount(String account);
 	
-	
+
 }

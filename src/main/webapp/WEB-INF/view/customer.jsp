@@ -54,6 +54,10 @@
 						<td>${customer.ifcCode}</td>
 
 						<td class="m-0 p-0 d-flex ">
+						
+							<button class="btn btn-outline-success m-2 p-1 addressBtn">
+								<i class="fa fa-home text-warning" aria-hidden="true"></i>
+							</button>
 							<button class="btn btn-outline-success m-2 p-1 updateCustomerBtn">
 								<i class="fa fa-pencil text-success" aria-hidden="true"></i>
 							</button>

@@ -286,4 +286,43 @@ public class CustomerSerivceImpl implements CustomerService {
 		return "Something went wring , please try again later";
 	}
 
+	public String saveCustomerAddressFromJSP(String account, String email, String mobile, String currentAddress,
+			String permanentAddress) {
+			CustomerAddress customeradd = customerAddRepository.findByCustomerAccount(account);
+			if(customeradd != null) {
+				customeradd.setCurrentLocation(currentAddress);
+				customeradd.setPermanentLocation(permanentAddress);
+				customeradd.setCustomerAccount(account);
+				customeradd.setEmail(email);
+				customeradd.setMobileNumber(mobile);
+				customerAddRepository.save(customeradd);
+				return "Updated";
+			}
+			else {
+				CustomerAddress customeraddess = new CustomerAddress();
+				customeraddess.setCurrentLocation(currentAddress);
+				customeraddess.setPermanentLocation(permanentAddress);
+				customeraddess.setCustomerAccount(account);
+				customeraddess.setEmail(email);
+				customeraddess.setMobileNumber(mobile);
+				customerAddRepository.save(customeraddess);
+				return "Saved SUccessfully";
+			}
+	}
+
+	public CustomerAddressDto findAddressByAccount(String account) {
+		CustomerAddress customerAdd = customerAddRepository.findByCustomerAccount(account);
+		if(customerAdd != null) {
+			CustomerAddressDto customerAddDto = new CustomerAddressDto();
+			customerAddDto.setCurrentLocation(customerAdd.getCurrentLocation());
+			customerAddDto.setCustomerAccount(customerAdd.getCustomerAccount());
+			customerAddDto.setEmail(customerAdd.getEmail());
+			customerAddDto.setMobileNumber(customerAdd.getMobileNumber());
+			customerAddDto.setPermanentLocation(customerAdd.getPermanentLocation());
+			return customerAddDto;
+			
+		}
+		return null;
+	}
+
 }

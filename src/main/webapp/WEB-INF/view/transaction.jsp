@@ -4,7 +4,15 @@
 
 <%@ page isELIgnored="false"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<div class="col-12 d-flex justify-content-center">
+<c:if test=" ${not empty error}">
+	<div class="alert alert-danger col-4" role="alert">${error.message}
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+	</div>
+</c:if>
+</div>
 <div class="container col-12 p-0 m-0 ">
 	<div class="col-12 d-flex flex-wrap">
 		<div class="col-12 d-flex  m-2 p-1 ">
@@ -35,7 +43,6 @@
 						Balance:</div>
 					<div class="col-6 p-0 m-0">Rs. ${currentBalance}</div>
 				</div>
-
 			</div>
 			<div class="col-7 ">
 				<form class="col-12 m-0 p-0 d-flex flex-wrap" id= "txForm">
@@ -86,18 +93,14 @@
 						<tr>
 							<td>${tx.account}</td>
 							<td>${tx.creditAmount}</td>
-
 							<td>${tx.debitAmount}</td>
 							<td>${tx.transactionType}</td>
-
 							<td>${tx.transactionDate}</td>
 						</tr>
-
 					</c:forEach>
 				</tbody>
 			</table>
 		</div>
-
 		<script src="https://code.jquery.com/jquery-3.4.1.min.js"
 			integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 			crossorigin="anonymous"></script>
